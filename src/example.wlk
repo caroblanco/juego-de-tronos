@@ -22,17 +22,20 @@ class Personaje{
 	
 	method esHodor() = false
 	
-	method mePuedoCasarCon(otro) = self.casaAdmiteCasCon(otro) && otro.casaAdmiteCascon(self)
+	method mePuedoCasarCon(otro) = self.casaAdmiteCasCon(otro) && otro.casaAdmiteCasCon(self)
 	
 	method casaAdmiteCasCon(otro) = casa.puedeCasarse(self,otro)
 	
 	method patrimonio() = casa.patrimonio() / casa.cantMiembros()
 	
 	method casarCon(otro){
+		self.validarCasamiento(otro)
+		self.agregarConyuge(otro)
+		otro.agregarConyuge(self)
+	}
+	
+	method validarCasamiento(otro){
 		if(self.mePuedoCasarCon(otro)){
-			self.agregarConyuge(otro)
-			otro.agregarConyuge(self)
-		}else{
 			self.error("NO SE PUEDE CASAR")
 		}
 	}
@@ -49,9 +52,9 @@ class Personaje{
 	
 	method aliados() = acompaniantes + conyuges + casa.miembros()
 	
-	method esPeligroso() = estaVivo && self.otrasCondciones()
+	method esPeligroso() = estaVivo && self.otrasCondiciones()
 	
-	method otrasCondciones() = self.dineroAliadosMayorA1000() || self.conyuguesRicos() || self.alianzaPeligrosa()
+	method otrasCondiciones() = self.dineroAliadosMayorA1000() || self.conyuguesRicos() || self.alianzaPeligrosa()
 	
 	method dineroAliadosMayorA1000() = self.aliados().sum({unA => unA.patrimonio()})
 	
@@ -63,7 +66,7 @@ class Personaje{
 }
 
 object hodor inherits Personaje{
-	override method esHodor() = false
+	override method esHodor() = true
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -127,8 +130,8 @@ class Conspiracion{
 	var fueEjecutada = false
 	
 	method crearConsp(){
-		if(self.sePuedeRealizar()){
-			self.error("EL OBJETIVO NO ES PELIGROSO")
+		if(not self.sePuedeRealizar()){
+			self.error("NO SE PUEDE CREAR")
 		}
 	}
 	
